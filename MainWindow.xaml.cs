@@ -18,8 +18,8 @@ namespace WpfAppCanvasDemo;
 public partial class MainWindow : Window
 {
     List<Point> points = new();
-    double minX = 0;
-    double minY = 0;
+    double minX = 500;
+    double minY = 500;
     double maxX = 1000;
     double maxY = 1000;
     Random r = new Random();
@@ -63,16 +63,12 @@ public partial class MainWindow : Window
         double dataWidth = maxX - minX;
         double dataHeight = maxY - minY;
 
-        // Avoid division by zero
-        if (dataWidth == 0 || dataHeight == 0)
-            return points;
-
         // Compute scale factors for both dimensions
         double scaleX = canvasWidth / dataWidth;
         double scaleY = canvasHeight / dataHeight;
 
         // Use the smallest scale to maintain aspect ratio
-        double scale = Math.Min(scaleX, scaleY); // 90% to avoid touching edges
+        double scale = Math.Min(scaleX, scaleY); 
 
         // Compute offset to center the drawing
         double offsetX = (canvasWidth - (dataWidth * scale)) / 2;
@@ -97,16 +93,18 @@ public partial class MainWindow : Window
         double dataHeight = maxY - minY;
 
         // Compute scale factors for both dimensions
-        double scaleX = dataWidth/canvasWidth;
-        double scaleY = dataHeight/canvasHeight;
+        double scaleX = canvasWidth / dataWidth;
+        double scaleY = canvasHeight / dataHeight;
 
-        double scale = Math.Max(scaleX, scaleY); 
+        double scale = Math.Min(scaleX, scaleY);
+        double offsetX = (canvasWidth - (dataWidth * scale)) / 2;
+        double offsetY = (canvasHeight - (dataHeight * scale)) / 2;
 
-        var rp = ScalePointsToFitCanvas(new List<Point>() { new Point(minX, minY) })[0];
-               
-        var pp= new Point(
-                (p.X - rp.X) * scale + minX, // Scale X and apply offset
-                (p.Y - rp.Y) * scale + minY  // Scale Y and apply offset
+        //var rp = ScalePointsToFitCanvas(new List<Point>() { new Point(minX, minY) })[0];
+
+        var pp = new Point(
+                (p.X - offsetX) / scale + minX, // Scale X and apply offset
+                (p.Y - offsetY) / scale + minY  // Scale Y and apply offset
             );
         return pp;
     }
@@ -170,7 +168,7 @@ public partial class MainWindow : Window
     }
     private bool WithinBox(Point p)
     {
-        Rect boundingBox = new Rect(minX,minY,maxX,maxY);
+        Rect boundingBox = new Rect(minX,minY,maxX-minX,maxY-minY);
         return boundingBox.Contains(p);
     }
     private void ButtonSave_Click(object sender, RoutedEventArgs e)
@@ -204,7 +202,14 @@ public partial class MainWindow : Window
         {
             encoder.Save(fs);
         }
+        ////bitmap
+        //System.Drawing.Bitmap bm = new((int)maxX,(int)maxY);
+        //using (System.Drawing.Graphics g = System.Drawing.Graphics.FromImage(bm))
+        //{
 
+        //}
+
+        //bm.Save("C:\\VisualStudioProjects\\PG_cursus\\data\\test.png");
         MessageBox.Show("Canvas saved as JPG!");
     }
 
