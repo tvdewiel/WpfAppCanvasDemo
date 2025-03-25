@@ -13,7 +13,7 @@
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
         <Button Grid.Row="0" Content="add" Click="ButtonAdd_Click" Margin="5"/>
-        <Canvas Grid.Row="1" Name="drawingCanvas" Background="White" SizeChanged="drawingCanvas_SizeChanged" MouseLeftButtonDown="drawingCanvas_MouseLeftButtonDown" MouseRightButtonDown="drawingCanvas_MouseRightButtonDown" />
+        <Canvas Grid.Row="1" Name="drawingCanvas" Background="White" SizeChanged="drawingCanvas_SizeChanged" MouseLeftButtonDown="drawingCanvas_MouseLeftButtonDown" MouseRightButtonDown="drawingCanvas_MouseRightButtonDown" MouseMove="drawingCanvas_MouseMove" />
         <Button Grid.Row="2" Content="Save" Click="ButtonSave_Click" Margin="5"/>
     </Grid>
 </Window>

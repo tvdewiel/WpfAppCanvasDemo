@@ -17,15 +17,27 @@ namespace WpfAppCanvasDemo;
 /// </summary>
 public partial class MainWindow : Window
 {
-    List<Point> points = new();
     double minX = 500;
     double minY = 500;
     double maxX = 1000;
     double maxY = 1000;
+    List<Point> points = new();
+    Line mouseLine = new()
+    {
+        Stroke = Brushes.Black,
+        StrokeThickness = 1,
+        StrokeDashArray = new DoubleCollection { 2, 2 }
+        //X1 = 0,
+        //Y1 = 0,
+        //X2 = 100,
+        //Y2 = 100
+    };
+    
     Random r = new Random();
     public MainWindow()
     {
         InitializeComponent();
+        drawingCanvas.Children.Add(mouseLine);
     }
     private void DrawRectangle(Point p1, Point p2)
     {
@@ -165,6 +177,12 @@ public partial class MainWindow : Window
         var p = ScalePointsToFitCanvas(points);
         DrawPoints(p);
         DrawAllLines(p);
+        if (p.Count > 0)
+        {
+            mouseLine.X1 = p[p.Count - 1].X;
+            mouseLine.Y1 = p[p.Count - 1].Y;
+            drawingCanvas.Children.Add(mouseLine);
+        }
     }
     private bool WithinBox(Point p)
     {
@@ -231,8 +249,11 @@ public partial class MainWindow : Window
         Point clickPosition = e.GetPosition(drawingCanvas);
         Point p=ScalePointFromCanvas(clickPosition);
         if (WithinBox(p))
+        {
             points.Add(p);
-       
+            mouseLine.X1 = clickPosition.X;
+            mouseLine.Y1 = clickPosition.Y;
+        }
         Draw();
     }
 
@@ -240,6 +261,29 @@ public partial class MainWindow : Window
     {
         points = new();
         drawingCanvas.Children.Clear();
+        //mouseLine.X1 = 0;
+        //mouseLine.Y1 = 0;
+        //mouseLine.X2 = 0;
+        //mouseLine.Y2 = 0;
         Draw();
+    }
+
+    private void drawingCanvas_MouseMove(object sender, MouseEventArgs e)
+    {
+        // Get the mouse click position
+        Point mousePosition = e.GetPosition(drawingCanvas);
+        //Point p = ScalePointFromCanvas(mousePosition);
+        //if (WithinBox(p))
+        {
+            if (points.Count > 0)
+            {
+                //mouseLine.X1 = points[points.Count - 1].X;
+                //mouseLine.Y1 = points[points.Count - 1].Y;
+                mouseLine.X2 = mousePosition.X;
+                mouseLine.Y2 = mousePosition.Y;
+                //Draw();
+            }
+            //points.Add(p);
+        }
     }
 }
